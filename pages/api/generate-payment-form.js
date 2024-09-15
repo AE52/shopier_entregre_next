@@ -4,8 +4,9 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     const data = req.body;
 
-    const apiKey = data.apikey;
-    const secret = data.apisecret;
+    const apiKey = '74f9c52726911ecbd812d32e8279b628';
+    const secret = 'c228ce1865e9a0c25d6c1f0ee6adcbe5';
+    
     const userRegistered = new Date().toISOString().slice(0, 10).replace(/-/g, '.');
     const buyerAccountAge = Math.floor((new Date() - new Date(userRegistered)) / 86400);
     const currency = 0;
