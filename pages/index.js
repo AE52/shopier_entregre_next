@@ -22,13 +22,16 @@ export default function Home() {
   }, []);
 
   const products = [
-    { id: 1, name: 'Dünyanın en iyi Sol kanadı', price: 2000, image: '/eren.jpg' },
-    { id: 2, name: 'Dünyanın en iyi 10 numarası', price: 1000, image: '/aras.jpg' },
-    { id: 3, name: 'Berat', price: 5, image: '/berat.jpg' },
-    { id: 7, name: 'first touch 0 forvet', price: 3, image: '/mami.png' },
-    { id: 4, name: 'Panik stoper', price: 1, image: '/boran.png' },
-    { id: 5, name: 'gol beklentisi 0 top ezen kanat', price: 1, image: '/bilal.png' },
-    { id: 6, name: 'ağır vasıta 🚜🚛', price: 1, image: '/mustafa.png' },
+    { id: 1, name: 'Dünyanın en iyi Sol kanadı(AE52)', price: 2000, image: '/eren.jpg' },
+    { id: 2, name: 'Dünyanın en iyi 10 numarası(ARASİNYO)', price: 1000, image: '/aras.jpg' },
+    { id: 3, name: 'Tek pas ustası çevre kontrol 100 box to box orta saha(BİLAL DUTUCU)', price: 1000, image: '/bilaldutucu.png' },
+    { id: 4, name: 'Adam yiyen stoper(ESAD)', price: 1000, image: '/esad.png' },
+    { id: 5, name: 'Adama toure fizikli çevik stoper(SERHAN)', price: 1000, image: '/serhan.png' },
+    { id: 6, name: 'Vasat altı 8 numara(BERAT)', price: 5, image: '/berat.jpg' },
+    { id: 7, name: 'first touch 0 forvet (MAMİ)', price: 3, image: '/mami.png' },
+    { id: 8, name: 'Panik stoper(BORAN)', price: 1, image: '/boran.png' },
+    { id: 9, name: 'gol beklentisi 0 top ezen kanat kerem aktürkoğlu stili(BİLAL DUTUCU)', price: 1, image: '/bilal.png' },
+    { id: 10, name: 'ağır vasıta 🚜🚛(MUSTAFA)', price: 1, image: '/mustafa.png' },
   ];
 
   // Ürün sepete eklenince sepete kaydır
