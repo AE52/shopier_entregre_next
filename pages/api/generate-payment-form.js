@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const userRegistered = new Date().toISOString().slice(0, 10).replace(/-/g, '.');
     const buyerAccountAge = Math.floor((new Date() - new Date(userRegistered)) / 86400);
     const currency = 0;
-    let productInfo = data.item_name.replace(/"/g, '');
+    const productInfo = data.item_name.replace(/"/g, '');
     const productType = 1;
     const modulVersion = '1.0.4';
     const randomNumber = Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
@@ -44,8 +44,9 @@ export default async function handler(req, res) {
       'random_nr': randomNumber
     };
 
-    const dataToHash = args['random_nr'] + args['platform_order_id'] + args['total_order_value'] + args['currency'];
+    const dataToHash = String(args['random_nr']) + String(args['platform_order_id']) + String(args['total_order_value']) + String(args['currency']);
     const signature = crypto.createHmac('SHA256', secret).update(dataToHash).digest('base64');
+    
     args['signature'] = signature;
 
     const formInputs = Object.keys(args).map(key => `<input type='hidden' name='${key}' value='${args[key]}'/>`).join('');
