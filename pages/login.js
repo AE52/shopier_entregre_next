@@ -1,13 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Footer from './components/Footer';
+import Header from './components/Header';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const [isRendered, setIsRendered] = useState(false);
+
+  useEffect(() => {
+    setIsRendered(true);  // Bu sayfanın istemci tarafında render edildiğini işaretliyoruz
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,6 +27,10 @@ export default function Login() {
     }
   };
 
+  if (!isRendered) {
+    return null;  // Sunucu tarafında render edilmesini engelliyoruz
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -26,6 +38,7 @@ export default function Login() {
       exit={{ opacity: 0 }}
       className="min-h-screen flex flex-col justify-center items-center bg-black text-white"
     >
+      <Header />
       <h1 className="text-5xl font-bold mb-8 text-gradient bg-gradient-to-r from-purple-500 to-indigo-500">Giriş Yap</h1>
       <form onSubmit={handleLogin} className="w-full max-w-md bg-gray-900 p-8 rounded-lg shadow-lg">
         <input
@@ -52,8 +65,11 @@ export default function Login() {
       </form>
       <p className="mt-4">
         Hesabın yok mu?{' '}
-        <a href="/register" className="text-indigo-400 hover:underline">Kayıt Ol</a>
+        <Link href="/register" className="text-indigo-400 hover:underline">
+          Kayıt Ol
+        </Link>
       </p>
+      <Footer />
     </motion.div>
   );
 }

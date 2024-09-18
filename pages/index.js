@@ -1,3 +1,4 @@
+import Image from 'next/image'; // Import Image bileşeni
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useRouter } from 'next/router';
@@ -85,10 +86,12 @@ export default function Home() {
           {products.map(product => (
             <div key={product.id} className="border rounded-lg shadow-lg p-4 bg-gray-900">
               <div className="flex justify-center">
-                <img 
+                <Image 
                   src={product.image} 
                   alt={product.name} 
-                  className="w-full h-64 object-contain rounded-md" // object-contain ekledik
+                  width={300} 
+                  height={200} 
+                  className="w-full h-64 object-contain rounded-md" // object-contain ile tam sığdırma
                 />
               </div>
               <h2 className="text-2xl font-bold mt-4 text-center">{product.name}</h2>

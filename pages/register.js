@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
+import Header from './components/Header';
+import Link from 'next/link';
+import Footer from './components/Footer';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -9,6 +12,11 @@ export default function Register() {
   const [fullName, setFullName] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const [isRendered, setIsRendered] = useState(false);
+
+  useEffect(() => {
+    setIsRendered(true);  // Bu sayfanın istemci tarafında render edildiğini işaretliyoruz
+  }, []);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -25,6 +33,10 @@ export default function Register() {
     }
   };
 
+  if (!isRendered) {
+    return null;  // Sunucu tarafında render edilmesini engelliyoruz
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -32,6 +44,7 @@ export default function Register() {
       exit={{ opacity: 0 }}
       className="min-h-screen flex flex-col justify-center items-center bg-black text-white"
     >
+      <Header />
       <h1 className="text-5xl font-bold mb-8 text-gradient bg-gradient-to-r from-purple-500 to-indigo-500">Kayıt Ol</h1>
       <form onSubmit={handleRegister} className="w-full max-w-md bg-gray-900 p-8 rounded-lg shadow-lg">
         <input
@@ -65,8 +78,11 @@ export default function Register() {
       </form>
       <p className="mt-4">
         Hesabın var mı?{' '}
-        <a href="/login" className="text-indigo-400 hover:underline">Giriş Yap</a>
+        <Link href="/login" className="text-indigo-400 hover:underline">
+          Giriş Yap
+        </Link>
       </p>
+      <Footer />
     </motion.div>
   );
 }
