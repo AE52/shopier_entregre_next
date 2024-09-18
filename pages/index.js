@@ -24,7 +24,11 @@ export default function Home() {
   const products = [
     { id: 1, name: 'Dünyanın en iyi Sol kanadı', price: 2000, image: '/eren.jpg' },
     { id: 2, name: 'Dünyanın en iyi 10 numarası', price: 1000, image: '/aras.jpg' },
-    { id: 3, name: 'Berat', price: 50, image: '/berat.jpg' },
+    { id: 3, name: 'Berat', price: 5, image: '/berat.jpg' },
+    { id: 7, name: 'first touch 0 forvet', price: 3, image: '/mami.png' },
+    { id: 4, name: 'Panik stoper', price: 0.1, image: '/boran.png' },
+    { id: 5, name: 'gol beklentisi 0 top ezen kanat', price: 0.1, image: '/bilal.png' },
+    { id: 6, name: 'ağır vasıta 🚜🚛', price: 0.1, image: '/mustafa.png' },
   ];
 
   // Ürün sepete eklenince sepete kaydır
