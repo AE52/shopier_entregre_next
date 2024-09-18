@@ -30,7 +30,7 @@ export default function Home() {
     { id: 6, name: 'Vasat altı 8 numara(BERAT)', price: 5, image: '/berat.jpg' },
     { id: 7, name: 'first touch 0 forvet (MAMİ)', price: 3, image: '/mami.png' },
     { id: 8, name: 'Panik stoper(BORAN)', price: 1, image: '/boran.png' },
-    { id: 9, name: 'gol beklentisi 0 top ezen kanat kerem aktürkoğlu stili(BİLAL DUTUCU)', price: 1, image: '/bilal.png' },
+    { id: 9, name: 'gol beklentisi 0 top ezen kanat kerem aktürkoğlu stili(BİLAL)', price: 1, image: '/bilal.png' },
     { id: 10, name: 'ağır vasıta 🚜🚛(MUSTAFA)', price: 1, image: '/mustafa.png' },
   ];
 
