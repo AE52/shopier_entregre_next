@@ -21,9 +21,9 @@ export default function Home() {
   }, []);
 
   const products = [
-    { id: 1, name: 'Kart 1', price: 1000, image: '/eren.jpg' },
-    { id: 2, name: 'Kart 2', price: 2000, image: '/card2.jpg' },
-    { id: 3, name: 'Kart 3', price: 3000, image: '/card3.jpg' },
+    { id: 1, name: 'Dünyanın en iyi Sol kanadı', price: 2000, image: '/eren.jpg' },
+    { id: 2, name: 'Dünyanın en iyi 10 numarası', price: 1000, image: '/aras.jpg' },
+    { id: 3, name: 'Berat', price: 50, image: '/berat.jpg' },
   ];
 
   // Ürün sepete eklenince sepete kaydır
@@ -85,7 +85,11 @@ export default function Home() {
           {products.map(product => (
             <div key={product.id} className="border rounded-lg shadow-lg p-4 bg-gray-900">
               <div className="flex justify-center">
-                <img src={product.image} alt={product.name} className="w-full h-64 object-cover rounded-md" />
+                <img 
+                  src={product.image} 
+                  alt={product.name} 
+                  className="w-full h-64 object-contain rounded-md" // object-contain ekledik
+                />
               </div>
               <h2 className="text-2xl font-bold mt-4 text-center">{product.name}</h2>
               <p className="text-lg text-center">Fiyat: {product.price} TL</p>
