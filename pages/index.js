@@ -87,7 +87,7 @@ export default function Home() {
     >
       <Header />
       
-      <div className="flex-1 container mx-auto p-8">
+      <div className="flex-1 container mx-auto p-8 pt-20">
         <h1 className="text-5xl font-bold text-center mb-8">
           Kart Mağazası
         </h1>
