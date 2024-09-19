@@ -35,14 +35,14 @@ export default function Footer() {
         <div>
           <h3 className="font-bold mb-4 text-xl">Satıcı</h3>
           <ul className="space-y-2">
-            <li><Link href="/sell" className="hover:text-purple-400">aeCards'da Satış Yap</Link></li>
+            <li><Link href="/sell" className="hover:text-purple-400">aeCards&apos;da Satış Yap</Link></li>
             <li><Link href="/basics" className="hover:text-purple-400">Temel Kavramlar</Link></li>
             <li><Link href="/academy" className="hover:text-purple-400">aeCards Akademi</Link></li>
           </ul>
         </div>
 
         {/* Yardım */}
-        <div className="text-center md:text-left"> {/* Sadece mobilde ortala */}
+        <div className="text-center md:text-left">
           <h3 className="font-bold mb-4 text-xl">Yardım</h3>
           <ul className="space-y-2">
             <li><Link href="/faq" className="hover:text-purple-400">Sıkça Sorulan Sorular</Link></li>
@@ -55,7 +55,7 @@ export default function Footer() {
 
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 px-4 text-center md:text-left">
         {/* Güvenlik Sertifikaları */}
-        <div className="flex flex-col items-center md:items-start ">
+        <div className="flex flex-col items-center md:items-start">
           <h3 className="font-bold mb-4 text-xl">Güvenlik Sertifikası</h3>
           <div className="flex justify-center md:justify-start space-x-4">
             {/* Sertifikalar */}
