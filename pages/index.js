@@ -5,9 +5,11 @@ import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import Footer from './components/Footer';
 import Header from './components/Header';
+import Link from 'next/link'; // Link bileşenini ekliyoruz
 
 export default function Home() {
   const [cart, setCart] = useState([]);
+  const [products, setProducts] = useState([]); // Supabase'den gelen ürünler
   const [user, setUser] = useState(null); // Kullanıcı giriş durumu
   const router = useRouter();
   const cartRef = useRef(null);  // Sepeti hedeflemek için ref
@@ -21,18 +23,18 @@ export default function Home() {
     checkUser();
   }, []);
 
-  const products = [
-    { id: 1, name: 'Dünyanın en iyi Sol kanadı(AE52)', price: 2000, image: '/eren.jpg' },
-    { id: 2, name: 'Dünyanın en iyi 10 numarası(ARASİNYO)', price: 1000, image: '/aras.jpg' },
-    { id: 3, name: 'Tek pas ustası çevre kontrol 100 box to box orta saha(BİLAL DUTUCU)', price: 1000, image: '/bilaldutucu.png' },
-    { id: 4, name: 'Adam yiyen stoper(ESAD)', price: 1000, image: '/esad.png' },
-    { id: 5, name: 'Adama toure fizikli çevik stoper(SERHAN)', price: 1000, image: '/serhan.png' },
-    { id: 6, name: 'Vasat altı 8 numara(BERAT)', price: 5, image: '/berat.jpg' },
-    { id: 7, name: 'first touch 0 forvet (MAMİ)', price: 3, image: '/mami.png' },
-    { id: 8, name: 'Panik stoper(BORAN)', price: 1, image: '/boran.png' },
-    { id: 9, name: 'gol beklentisi 0 top ezen kanat kerem aktürkoğlu stili(BİLAL)', price: 1, image: '/bilal.png' },
-    { id: 10, name: 'ağır vasıta 🚜🚛(MUSTAFA)', price: 1, image: '/mustafa.png' },
-  ];
+  // Supabase'den ürün verilerini çek
+  useEffect(() => {
+    const fetchProducts = async () => {
+      let { data: products, error } = await supabase
+        .from('products')
+        .select('*');
+      if (!error) {
+        setProducts(products);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   // Ürün sepete eklenince sepete kaydır
   const addToCart = (product) => {
@@ -80,29 +82,39 @@ export default function Home() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen flex flex-col justify-between bg-gradient-to-r from-black via-purple-900 to-black text-white"
+      className="min-h-screen flex flex-col justify-between bg-gradient-to-r from-black via-purple-900 to-black text-white relative z-10"
     >
       <Header />
       
-      <div className="container mx-auto p-8">
+      <div className="container mx-auto p-8 py-20">
         <h1 className="text-5xl font-bold text-center mb-8 bg-gradient-to-r from-purple-500 to-indigo-500 text-transparent bg-clip-text">
           Kart Mağazası
         </h1>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {products.map(product => (
-            <div key={product.id} className="border rounded-lg shadow-lg p-4 bg-gray-900">
-              <div className="flex justify-center">
-                <Image 
-                  src={product.image} 
-                  alt={product.name} 
-                  width={300} 
-                  height={200} 
-                  className="w-full h-64 object-contain rounded-md" // object-contain ile tam sığdırma
-                />
-              </div>
-              <h2 className="text-2xl font-bold mt-4 text-center">{product.name}</h2>
-              <p className="text-lg text-center">Fiyat: {product.price} TL</p>
+            <div 
+              key={product.id} 
+              className="border rounded-lg shadow-lg p-4 bg-gray-900 w-full h-[500px] flex flex-col justify-between hover:scale-105 transform transition duration-300"
+            >
+              <Link href={`/product/${product.id}`} passHref>
+                <div className="cursor-pointer flex flex-col items-center">
+                  <div className="flex justify-center h-64 w-full">
+                    <Image 
+                      src={product.image_url} 
+                      alt={product.name} 
+                      width={300} 
+                      height={200} 
+                      className="w-full h-full object-cover rounded-md" 
+                    />
+                  </div>
+                  <h2 className="text-xl md:text-2xl font-bold mt-4 text-center break-words overflow-hidden text-clamp max-h-16">
+                    {product.name}
+                  </h2>
+                  <p className="text-md md:text-lg text-center">Fiyat: {product.price} TL</p>
+                </div>
+              </Link>
+
+              {/* Sepete Ekle Butonu */}
               <button
                 className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2 px-4 mt-4 w-full rounded-md hover:opacity-90 transition-opacity"
                 onClick={() => addToCart(product)}
@@ -113,9 +125,20 @@ export default function Home() {
           ))}
         </div>
 
+        {/* CSS */}
+        <style jsx>{`
+          .text-clamp {
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Maksimum 2 satır göster */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        `}</style>
+
         {/* Sepet Alanı */}
         {cart.length > 0 && (
-          <div ref={cartRef} className="mt-8 bg-gray-800 p-4 rounded-md shadow-lg">
+          <div ref={cartRef} className="mt-8 bg-gray-800 p-4 rounded-md shadow-lg relative z-20">
             <h2 className="text-2xl font-bold mb-4">Sepetiniz</h2>
             <ul>
               {cart.map((item, index) => (
