@@ -14,8 +14,17 @@ export default function Login() {
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
-    setIsRendered(true);  // Bu sayfanın istemci tarafında render edildiğini işaretliyoruz
-  }, []);
+    setIsRendered(true); // Bu sayfanın istemci tarafında render edildiğini işaretliyoruz
+
+    // Eğer kullanıcı zaten giriş yapmışsa, anasayfaya yönlendirilir
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.push('/'); // Giriş yapmışsa anasayfaya yönlendir
+      }
+    };
+    checkUser();
+  }, [router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,7 +37,7 @@ export default function Login() {
   };
 
   if (!isRendered) {
-    return null;  // Sunucu tarafında render edilmesini engelliyoruz
+    return null; // Sunucu tarafında render edilmesini engelliyoruz
   }
 
   return (
@@ -39,7 +48,11 @@ export default function Login() {
       className="min-h-screen flex flex-col justify-center items-center bg-black text-white"
     >
       <Header />
-      <h1 className="text-5xl font-bold mb-8 text-gradient bg-gradient-to-r from-purple-500 to-indigo-500">Giriş Yap</h1>
+      
+      <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-8 text-center bg-gradient-to-r from-purple-500 to-indigo-500 text-transparent bg-clip-text">
+        Giriş Yap
+      </h1>
+
       <form onSubmit={handleLogin} className="w-full max-w-md bg-gray-900 p-8 rounded-lg shadow-lg">
         <input
           type="email"
@@ -63,12 +76,14 @@ export default function Login() {
         </button>
         {error && <p className="text-red-500 mt-4">{error}</p>}
       </form>
+
       <p className="mt-4">
         Hesabın yok mu?{' '}
         <Link href="/register" className="text-indigo-400 hover:underline">
           Kayıt Ol
         </Link>
       </p>
+
       <Footer />
     </motion.div>
   );

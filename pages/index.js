@@ -89,10 +89,10 @@ export default function Home() {
     } else {
       const orderData = {
         order_id: Math.floor(Math.random() * 1000000),
-        item_name: cart.map((p) => p.name).join(', '),
+        item_name: cart.map((p) => p.name).join(', '),  // Tüm ürün adlarını birleştir
         buyer_name: user.user_metadata.full_name,
         buyer_email: user.email,
-        total: calculateTotal(),
+        total: calculateTotal(),  // Toplam ücreti hesapla
       };
 
       const res = await fetch('/api/generate-payment-form', {
@@ -102,7 +102,7 @@ export default function Home() {
       });
 
       const html = await res.text();
-      document.write(html);
+      document.write(html);  // Ödeme formunu görüntüle
     }
   };
 
