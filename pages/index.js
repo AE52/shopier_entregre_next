@@ -87,24 +87,28 @@ export default function Home() {
     if (!user) {
       router.push('/login');
     } else {
+      // Her bir ürünün ismini ve adetini birleştiriyoruz
+      const formattedItems = cart.map(item => `${item.quantity} tane ${item.name}`).join(', ');
+  
       const orderData = {
         order_id: Math.floor(Math.random() * 1000000),
-        item_name: cart.map((p) => p.name).join(', '),  // Tüm ürün adlarını birleştir
+        item_name: formattedItems,  // Adet ve ürün isimleriyle birlikte gönderiliyor
         buyer_name: user.user_metadata.full_name,
         buyer_email: user.email,
         total: calculateTotal(),  // Toplam ücreti hesapla
       };
-
+  
       const res = await fetch('/api/generate-payment-form', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
       });
-
+  
       const html = await res.text();
       document.write(html);  // Ödeme formunu görüntüle
     }
   };
+  
 
   const removeFromCart = async (productId) => {
     const newCart = cart.filter(item => item.product_id !== productId);
