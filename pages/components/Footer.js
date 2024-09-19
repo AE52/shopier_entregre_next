@@ -6,9 +6,9 @@ export default function Footer() {
     <motion.footer
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-black py-8 mt-16 text-white"
+      className="bg-black py-8 mt-16 text-white w-full" // w-full ekledik
     >
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-4">
+      <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-8 px-4">
         {/* Trendyol Grubu */}
         <div>
           <h3 className="font-bold mb-4 text-xl">aeCards</h3>
@@ -53,15 +53,13 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 px-4">
+      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 px-4">
         {/* Güvenlik Sertifikaları */}
         <div className="text-center md:text-left">
           <h3 className="font-bold mb-4 text-xl">Güvenlik Sertifikası</h3>
           <div className="flex justify-center md:justify-start space-x-4">
             {/* Sertifikalar */}
-            <img src="/security1.png" alt="Güvenlik Sertifikası" className="h-10" />
-            <img src="/security2.png" alt="Güvenlik Sertifikası" className="h-10" />
-            <img src="/security3.png" alt="Güvenlik Sertifikası" className="h-10" />
+            <img src="/shopier.png" alt="Shopier" className="h-10" />
           </div>
         </div>
 
@@ -70,9 +68,9 @@ export default function Footer() {
           <h3 className="font-bold mb-4 text-xl">Güvenli Alışveriş</h3>
           <div className="flex justify-center space-x-4">
             {/* Ödeme Yöntemleri */}
-            <img src="/visa.png" alt="Visa" className="h-10" />
-            <img src="/mastercard.png" alt="Mastercard" className="h-10" />
-            <img src="/amex.png" alt="Amex" className="h-10" />
+            <img src="/footer-visa.webp" alt="Visa" className="h-10" />
+            <img src="/footer-mastercard.webp" alt="Mastercard" className="h-10" />
+            <img src="/footer-american-express.webp" alt="Amex" className="h-10" />
           </div>
         </div>
 
@@ -81,15 +79,15 @@ export default function Footer() {
           <h3 className="font-bold mb-4 text-xl">Mobil Uygulamalar</h3>
           <div className="flex justify-center md:justify-end space-x-4">
             {/* Uygulama Linkleri */}
-            <img src="/appstore.png" alt="App Store" className="h-10" />
-            <img src="/googleplay.png" alt="Google Play" className="h-10" />
-            <img src="/huawei.png" alt="Huawei AppGallery" className="h-10" />
+            <img src="/footer-app-store.webp" alt="App Store" className="h-10" />
+            <img src="/footer-google-play.webp" alt="Google Play" className="h-10" />
+            <img src="/footer-app-gallery.webp" alt="Huawei AppGallery" className="h-10" />
           </div>
         </div>
       </div>
 
       {/* Alt Footer */}
-      <div className="container mx-auto mt-8 px-4 border-t border-gray-700 pt-4 text-center text-sm">
+      <div className="w-full mt-8 px-4 border-t border-gray-700 pt-4 text-center text-sm">
         <p>&copy; {new Date().getFullYear()} aeCards. Tüm hakları saklıdır.</p>
         <div className="mt-4 flex justify-center space-x-4">
           <Link href="/terms" className="hover:text-purple-400">Kullanım Koşulları</Link>

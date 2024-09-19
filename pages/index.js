@@ -82,35 +82,33 @@ export default function Home() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen flex flex-col justify-between bg-gradient-to-r from-black via-purple-900 to-black text-white relative z-10"
+      className="flex flex-col min-h-screen bg-gradient-to-r from-black via-purple-900 to-black text-white"
+      style={{ overflowX: 'hidden' }} // Yatay kaymayı engellemek için eklendi
     >
       <Header />
       
-      <div className="container mx-auto p-8 py-20">
-        <h1 className="text-5xl font-bold text-center mb-8 bg-gradient-to-r from-purple-500 to-indigo-500 text-transparent bg-clip-text">
+      <div className="flex-1 container mx-auto p-8">
+        <h1 className="text-5xl font-bold text-center mb-8">
           Kart Mağazası
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {products.map(product => (
-            <div 
-              key={product.id} 
-              className="border rounded-lg shadow-lg p-4 bg-gray-900 w-full h-[500px] flex flex-col justify-between hover:scale-105 transform transition duration-300"
-            >
-              <Link href={`/product/${product.id}`} passHref>
+            <div key={product.id} className="border rounded-lg shadow-lg p-4 bg-gray-900 flex flex-col justify-between">
+              <Link href={`/product/${product.id}`}>
                 <div className="cursor-pointer flex flex-col items-center">
-                  <div className="flex justify-center h-64 w-full">
-                    <Image 
-                      src={product.image_url} 
-                      alt={product.name} 
-                      width={300} 
-                      height={200} 
-                      className="w-full h-full object-cover rounded-md" 
-                    />
-                  </div>
-                  <h2 className="text-xl md:text-2xl font-bold mt-4 text-center break-words overflow-hidden text-clamp max-h-16">
+                  <Image 
+                    src={product.image_url} 
+                    alt={product.name} 
+                    width={300} 
+                    height={200} 
+                    className="w-full h-full object-cover rounded-md"
+                  />
+                  <h2 className="text-xl md:text-2xl font-bold mt-4 text-center">
                     {product.name}
                   </h2>
-                  <p className="text-md md:text-lg text-center">Fiyat: {product.price} TL</p>
+                  <p className="text-md md:text-lg text-center">
+                    Fiyat: {product.price} TL
+                  </p>
                 </div>
               </Link>
 
