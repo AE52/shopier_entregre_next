@@ -60,11 +60,16 @@ export default function Home() {
 
   // Sepete ekleme fonksiyonu
   const addToCart = async (product) => {
+    if (!product.price) {
+      alert('Bu ürün için fiyat bilgisi mevcut değil.');
+      return;
+    }
+
     if (!user) {
       const newCartItem = {
         product_id: product.id,
         name: product.name,
-        price: product.price,
+        price: product.price,  // Ürün fiyatı kontrol ediliyor
         quantity: 1,
         user_id: 'guest',
       };
@@ -103,7 +108,6 @@ export default function Home() {
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
-  
 
   const handleGuestInputChange = (e) => {
     const { name, value } = e.target;
@@ -113,14 +117,20 @@ export default function Home() {
   // Misafir kullanıcı checkout işlemi
   const handleGuestCheckout = async (e) => {
     e.preventDefault();
-   
+    
     if (cart.length === 0) {
       alert("Sepetiniz boş.");
       return;
     }
-  
+
+    if (!guestDetails.full_name || !guestDetails.surname || !guestDetails.email || 
+        !guestDetails.phone || !guestDetails.billing_address || !guestDetails.city) {
+      setErrorMessage('Lütfen tüm alanları doldurun.');
+      return;
+    }
+
     try {
-      const totalValue = calculateTotal(); // Burada toplam tutarı hesaplıyoruz.
+      const totalValue = calculateTotal();
       const orderData = {
         order_id: Math.floor(Math.random() * 1000000),
         item_name: cart.map(item => `${item.quantity} tane ${item.name}`).join(', '),
@@ -130,15 +140,15 @@ export default function Home() {
         buyer_phone: guestDetails.phone,
         billing_address: guestDetails.billing_address,
         city: guestDetails.city,
-        total: totalValue, // Burada toplam tutarı API'ye gönderiyoruz
+        total_order_value: totalValue,  // Toplam tutar API'ye doğru şekilde gönderiliyor
       };
-   
+  
       const res = await fetch('/api/generate-payment-form', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
       });
-   
+  
       const html = await res.text();
       document.write(html);
     } catch (error) {
@@ -146,23 +156,22 @@ export default function Home() {
       alert("Ödeme işlemi sırasında bir hata oluştu, lütfen tekrar deneyin.");
     }
   };
-  
 
-  // Kullanıcı oturum açmışsa normal checkout işlemi
   const handleCheckout = async () => {
-    if (!user) {c
+    if (!user) {
       router.push('/login');
     } else {
+      const totalValue = calculateTotal();
       const orderData = {
         order_id: Math.floor(Math.random() * 1000000),
         item_name: cart.map(item => `${item.quantity} tane ${item.name}`).join(', '),
         buyer_name: user.user_metadata.full_name,
-        buyer_surname: user.user_metadata.surname || '', // Ekleyin
+        buyer_surname: user.user_metadata.surname || '',
         buyer_email: user.email,
-        buyer_phone: user.user_metadata.phone || '', // Ekleyin
+        buyer_phone: user.user_metadata.phone || '',
         billing_address: user.user_metadata.billing_address,
         city: user.user_metadata.city,
-        total: calculateTotal(),
+        total_order_value: totalValue,  // Toplam tutar burada doğru hesaplanıyor
       };
 
       const res = await fetch('/api/generate-payment-form', {

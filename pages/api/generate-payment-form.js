@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     const modulVersion = '1.0.4';
     const randomNumber = Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
 
-    // Kullanıcı tarafından doldurulan veriler (hepsi zorunlu)
+    // Kullanıcı tarafından doldurulan veriler
     const args = {
       'API_key': apiKey,
       'website_index': 3,
@@ -32,14 +32,14 @@ export default async function handler(req, res) {
       'buyer_id_nr': 0,                   // Opsiyonel
       'buyer_phone': data.buyer_phone,
       'billing_address': data.billing_address,
-      'billing_city': data.billing_city,
+      'billing_city': data.city,
       'billing_country': "TR",
       'billing_postcode': data.billing_postcode || '', // Opsiyonel
       'shipping_address': data.billing_address,
-      'shipping_city': data.billing_city,
+      'shipping_city': data.city,
       'shipping_country': "TR",
       'shipping_postcode': data.billing_postcode || '', // Opsiyonel
-      'total_order_value': data.total_order_value,
+      'total_order_value': data.total_order_value, // Toplam tutar
       'currency': 0,                      // 0 = Türk Lirası
       'platform': 0,
       'is_in_frame': 1,
@@ -48,15 +48,15 @@ export default async function handler(req, res) {
       'random_nr': randomNumber,
     };
 
-    // İmza oluşturma (Shopier dokümantasyonuna uygun olarak)
+    // İmza oluşturma
     const dataToHash = String(args['random_nr']) + String(args['platform_order_id']) + String(args['total_order_value']) + String(args['currency']);
     const signature = crypto.createHmac('SHA256', secret).update(dataToHash).digest('base64');
-    args['signature'] = signature; // İmza veriye ekleniyor
+    args['signature'] = signature;
 
     // Form verilerini Shopier'e göndermek için HTML formu oluşturma
     const formInputs = Object.keys(args).map(key => `<input type='hidden' name='${key}' value='${args[key]}'/>`).join('');
 
-    // HTML formu oluşturuluyor ve kullanıcıya gösteriliyor
+    // HTML formu oluşturuluyor
     const formHtml = `
       <html>
         <head>
