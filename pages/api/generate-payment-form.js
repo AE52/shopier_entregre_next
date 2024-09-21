@@ -8,13 +8,13 @@ export default async function handler(req, res) {
     const apiKey = '74f9c52726911ecbd812d32e8279b628';
     const secret = 'c228ce1865e9a0c25d6c1f0ee6adcbe5';
 
-    // Kullanıcı hesap yaşı (örnek olarak sabit tarih)
-    const buyerAccountAge = Math.floor((new Date() - new Date('2022-01-01')) / (1000 * 60 * 60 * 24)); // Örnek hesaplama
+    // Kullanıcı hesap yaşı, örnek olarak sabit bir tarih kullanılıyor
+    const buyerAccountAge = Math.floor((new Date() - new Date('2022-01-01')) / (1000 * 60 * 60 * 24));
 
     // Para birimi (0 = Türk Lirası)
     const currency = 0;
 
-    // Ürün bilgisi
+    // Ürün bilgisi, özel karakterlerden arındırılıyor
     let productInfo = data.item_name.replace(/"/g, '');
 
     // Ürün tipi (1 = Fiziksel ürün)
@@ -31,28 +31,27 @@ export default async function handler(req, res) {
       'platform_order_id': data.order_id,
       'product_name': productInfo,
       'product_type': productType,
-      'buyer_surname': data.buyer_surname || '',  // Zorunluysa boş string gönderin
-      'buyer_phone': data.buyer_phone || '',      // Zorunluysa boş string gönderin
-
+      'buyer_name': data.buyer_name || '',      // Eksikse boş gönderin
+      'buyer_surname': data.buyer_surname || '',// Eksikse boş gönderin
       'buyer_email': data.buyer_email,
-      'buyer_phone': data.buyer_phone || '', // Eksikse boş gönderin
+      'buyer_account_age': buyerAccountAge,     // Kullanıcı hesap yaşı
+      'buyer_phone': data.buyer_phone || '',    // Eksikse boş gönderin
       'billing_address': data.billing_address,
       'billing_city': data.city,
-      'billing_country': "TR",
-      'billing_postcode': '', // Opsiyonel
+      'billing_country': 'TR',
+      'billing_postcode': '',                   // Opsiyonel
       'shipping_address': data.billing_address,
       'shipping_city': data.city,
-      'shipping_country': "TR",
-      'shipping_postcode': '', // Opsiyonel
-      'total_order_value': data.total || 0, // Eğer boşsa varsayılan 0 değerini gönderin // Doğru hesaplandığından emin olun
-      'currency': 0,
+      'shipping_country': 'TR',
+      'shipping_postcode': '',                  // Opsiyonel
+      'total_order_value': data.total || 0,     // Eğer boşsa varsayılan 0 değerini gönderin
+      'currency': currency,
       'platform': 0,
       'is_in_frame': 1,
       'current_language': 0,
       'modul_version': modulVersion,
       'random_nr': randomNumber
-  };
-  
+    };
 
     // İmza oluşturma (Shopier dokümantasyonuna uygun olarak)
     const dataToHash = String(args['random_nr']) + String(args['platform_order_id']) + String(args['total_order_value']) + String(args['currency']);

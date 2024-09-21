@@ -15,10 +15,13 @@ export default function Home() {
   const [isGuestCheckout, setIsGuestCheckout] = useState(false); // Misafir Kullanıcı Modu
   const [guestDetails, setGuestDetails] = useState({
     full_name: '',
+    surname: '',
     email: '',
+    phone: '',
     billing_address: '',
     city: '',
   });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const router = useRouter();
 
@@ -58,7 +61,6 @@ export default function Home() {
   // Sepete ekleme fonksiyonu
   const addToCart = async (product) => {
     if (!user) {
-      // Kullanıcı oturumu yoksa misafir kullanıcı olarak devam et
       const newCartItem = {
         product_id: product.id,
         name: product.name,
@@ -68,7 +70,6 @@ export default function Home() {
       };
       setCart([...cart, newCartItem]);
     } else {
-      // Kullanıcı oturum açmışsa mevcut sepet işlemleri
       const existingProductIndex = cart.findIndex((item) => item.product_id === product.id);
       if (existingProductIndex > -1) {
         const newCart = [...cart];
@@ -95,17 +96,14 @@ export default function Home() {
     setIsCartOpen(true);
   };
 
-  // Sepet görünümü aç/kapa
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
   };
 
-  // Toplam ücreti hesaplama
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  // Kullanıcı verilerini güncelleme (Misafir kullanıcı)
   const handleGuestInputChange = (e) => {
     const { name, value } = e.target;
     setGuestDetails({ ...guestDetails, [name]: value });
@@ -114,13 +112,22 @@ export default function Home() {
   // Misafir kullanıcı checkout işlemi
   const handleGuestCheckout = async (e) => {
     e.preventDefault();
-  
+    
+    // Form doğrulaması - tüm alanların doldurulduğundan emin olun
+    if (!guestDetails.full_name || !guestDetails.surname || !guestDetails.email || 
+        !guestDetails.phone || !guestDetails.billing_address || !guestDetails.city) {
+      setErrorMessage('Lütfen tüm alanları doldurun.');
+      return;
+    }
+
     try {
       const orderData = {
         order_id: Math.floor(Math.random() * 1000000),
         item_name: cart.map(item => `${item.quantity} tane ${item.name}`).join(', '),
         buyer_name: guestDetails.full_name,
+        buyer_surname: guestDetails.surname,
         buyer_email: guestDetails.email,
+        buyer_phone: guestDetails.phone,
         billing_address: guestDetails.billing_address,
         city: guestDetails.city,
         total: calculateTotal(),
@@ -139,7 +146,6 @@ export default function Home() {
       alert("Ödeme işlemi sırasında bir hata oluştu, lütfen tekrar deneyin.");
     }
   };
-  
 
   // Kullanıcı oturum açmışsa normal checkout işlemi
   const handleCheckout = async () => {
@@ -150,7 +156,11 @@ export default function Home() {
         order_id: Math.floor(Math.random() * 1000000),
         item_name: cart.map(item => `${item.quantity} tane ${item.name}`).join(', '),
         buyer_name: user.user_metadata.full_name,
+        buyer_surname: user.user_metadata.surname || '', // Ekleyin
         buyer_email: user.email,
+        buyer_phone: user.user_metadata.phone || '', // Ekleyin
+        billing_address: user.user_metadata.billing_address,
+        city: user.user_metadata.city,
         total: calculateTotal(),
       };
 
@@ -180,7 +190,6 @@ export default function Home() {
       .eq('product_id', productId)
       .eq('user_id', user.id);
   };
-  
 
   return (
     <motion.div
@@ -279,12 +288,24 @@ export default function Home() {
                 <h3 className="text-xl font-bold text-center mb-4">Misafir Alışverişi Bilgileri</h3>
                 <form onSubmit={handleGuestCheckout}>
                   <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2" htmlFor="full_name">Ad Soyad</label>
+                    <label className="block text-sm font-medium mb-2" htmlFor="full_name">Ad</label>
                     <input
                       id="full_name"
                       name="full_name"
                       type="text"
                       value={guestDetails.full_name}
+                      onChange={handleGuestInputChange}
+                      className="w-full p-2 rounded-md bg-gray-900 text-white"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2" htmlFor="surname">Soyad</label>
+                    <input
+                      id="surname"
+                      name="surname"
+                      type="text"
+                      value={guestDetails.surname}
                       onChange={handleGuestInputChange}
                       className="w-full p-2 rounded-md bg-gray-900 text-white"
                       required
@@ -297,6 +318,18 @@ export default function Home() {
                       name="email"
                       type="email"
                       value={guestDetails.email}
+                      onChange={handleGuestInputChange}
+                      className="w-full p-2 rounded-md bg-gray-900 text-white"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2" htmlFor="phone">Telefon</label>
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="text"
+                      value={guestDetails.phone}
                       onChange={handleGuestInputChange}
                       className="w-full p-2 rounded-md bg-gray-900 text-white"
                       required
@@ -326,6 +359,7 @@ export default function Home() {
                       required
                     />
                   </div>
+                  {errorMessage && <p className="text-red-500">{errorMessage}</p>}
                   <button
                     type="submit"
                     className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
