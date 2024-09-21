@@ -6,7 +6,7 @@ import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/router";
 import { FiShoppingCart } from "react-icons/fi"; // Sepet ikonu için react-icons kullanıyoruz
-
+import { Cart } from "./Cart";
 const navItems = [
   { path: "/", name: "Anasayfa" },
   { path: "/siparislerim", name: "Siparişlerim" },
@@ -41,8 +41,9 @@ export default function Header({ toggleCart, cartItems = [] }) { // cartItems'a 
     setUser(null);
     router.push("/login");
   };
-
+  
   return (
+    
     <header className="fixed w-full top-0 z-50 bg-black">
       <div className="container mx-auto flex justify-between items-center py-4 px-4">
         <h1 className="text-4xl font-bold text-white">
@@ -67,6 +68,7 @@ export default function Header({ toggleCart, cartItems = [] }) { // cartItems'a 
           </button>
         </div>
       </div>
+      
 
       {/* Hamburger Menü (Mobile ve Masaüstü) */}
       <motion.div
