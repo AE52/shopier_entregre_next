@@ -103,6 +103,7 @@ export default function Home() {
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
+  
 
   const handleGuestInputChange = (e) => {
     const { name, value } = e.target;
@@ -112,15 +113,14 @@ export default function Home() {
   // Misafir kullanıcı checkout işlemi
   const handleGuestCheckout = async (e) => {
     e.preventDefault();
-    
-    // Form doğrulaması - tüm alanların doldurulduğundan emin olun
-    if (!guestDetails.full_name || !guestDetails.surname || !guestDetails.email || 
-        !guestDetails.phone || !guestDetails.billing_address || !guestDetails.city) {
-      setErrorMessage('Lütfen tüm alanları doldurun.');
+   
+    if (cart.length === 0) {
+      alert("Sepetiniz boş.");
       return;
     }
-
+  
     try {
+      const totalValue = calculateTotal(); // Burada toplam tutarı hesaplıyoruz.
       const orderData = {
         order_id: Math.floor(Math.random() * 1000000),
         item_name: cart.map(item => `${item.quantity} tane ${item.name}`).join(', '),
@@ -130,15 +130,15 @@ export default function Home() {
         buyer_phone: guestDetails.phone,
         billing_address: guestDetails.billing_address,
         city: guestDetails.city,
-        total: calculateTotal(),
+        total: totalValue, // Burada toplam tutarı API'ye gönderiyoruz
       };
-  
+   
       const res = await fetch('/api/generate-payment-form', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
       });
-  
+   
       const html = await res.text();
       document.write(html);
     } catch (error) {
@@ -146,10 +146,11 @@ export default function Home() {
       alert("Ödeme işlemi sırasında bir hata oluştu, lütfen tekrar deneyin.");
     }
   };
+  
 
   // Kullanıcı oturum açmışsa normal checkout işlemi
   const handleCheckout = async () => {
-    if (!user) {
+    if (!user) {c
       router.push('/login');
     } else {
       const orderData = {
