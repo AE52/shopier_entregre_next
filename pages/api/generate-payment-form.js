@@ -31,8 +31,9 @@ export default async function handler(req, res) {
       'platform_order_id': data.order_id,
       'product_name': productInfo,
       'product_type': productType,
-      'buyer_name': data.buyer_name,
-      'buyer_surname': data.buyer_surname || '', // Eksikse boş gönderin
+      'buyer_surname': data.buyer_surname || '',  // Zorunluysa boş string gönderin
+      'buyer_phone': data.buyer_phone || '',      // Zorunluysa boş string gönderin
+
       'buyer_email': data.buyer_email,
       'buyer_phone': data.buyer_phone || '', // Eksikse boş gönderin
       'billing_address': data.billing_address,
@@ -43,7 +44,7 @@ export default async function handler(req, res) {
       'shipping_city': data.city,
       'shipping_country': "TR",
       'shipping_postcode': '', // Opsiyonel
-      'total_order_value': data.total, // Doğru hesaplandığından emin olun
+      'total_order_value': data.total || 0, // Eğer boşsa varsayılan 0 değerini gönderin // Doğru hesaplandığından emin olun
       'currency': 0,
       'platform': 0,
       'is_in_frame': 1,
