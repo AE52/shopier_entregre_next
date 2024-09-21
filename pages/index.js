@@ -242,148 +242,149 @@ export default function Home() {
       </div>
 
       {/* Sepet Paneli */}
-      <div className={`fixed inset-y-0 right-0 w-80 bg-gray-900 p-6 transition-transform transform z-50 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <h2 className="text-2xl font-bold mb-4">Sepetiniz</h2>
-        <button onClick={toggleCart} className="absolute top-4 right-6 text-white text-xl">✖</button>
+      <div className={`fixed inset-y-0 right-0 w-full sm:w-80 bg-gray-900 p-6 transition-transform transform z-50 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`} style={{ maxHeight: '100vh', overflowY: 'auto' }}>
+  <h2 className="text-2xl font-bold mb-4">Sepetiniz</h2>
+  <button onClick={toggleCart} className="absolute top-4 right-6 text-white text-xl">✖</button>
 
-        {cart.length > 0 ? (
-          <>
-            <ul>
-              {cart.map((item, index) => (
-                <li key={index} className="mb-4 flex justify-between items-center">
-                  <span>{item.name}</span>
-                  <span>{item.price} TL</span>
-                  <button
-                    className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 transition-colors"
-                    onClick={() => removeFromCart(item.product_id)}
-                  >
-                    Çıkart
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4 text-lg font-bold">Toplam: {calculateTotal()} TL</div>
+  {cart.length > 0 ? (
+    <>
+      <ul>
+        {cart.map((item, index) => (
+          <li key={index} className="mb-4 flex justify-between items-center">
+            <span>{item.name}</span>
+            <span>{item.price} TL</span>
+            <button
+              className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 transition-colors"
+              onClick={() => removeFromCart(item.product_id)}
+            >
+              Çıkart
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-4 text-lg font-bold">Toplam: {calculateTotal()} TL</div>
 
-            {/* Misafir veya Kayıt/Giriş Seçenekleri */}
-            <div className="mt-4">
-              {!user && (
-                <div className="flex flex-col gap-4">
-                  <button
-                    className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
-                    onClick={() => setIsGuestCheckout(true)}
-                  >
-                    Kayıt Olmadan Devam Et
-                  </button>
-                  <button
-                    className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
-                    onClick={() => router.push('/login')}
-                  >
-                    Kayıt Ol veya Giriş Yap
-                  </button>
-                </div>
-              )}
-              {user && (
-                <button
-                  className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 mt-4 w-full rounded-md hover:opacity-90 transition-opacity"
-                  onClick={handleCheckout}
-                >
-                  Satın Al
-                </button>
-              )}
-            </div>
-
-            {/* Misafir Bilgi Formu */}
-            {isGuestCheckout && (
-              <div className="bg-gray-800 p-6 rounded-lg shadow-lg mt-4">
-                <h3 className="text-xl font-bold text-center mb-4">Misafir Alışverişi Bilgileri</h3>
-                <form onSubmit={handleGuestCheckout}>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2" htmlFor="full_name">Ad</label>
-                    <input
-                      id="full_name"
-                      name="full_name"
-                      type="text"
-                      value={guestDetails.full_name}
-                      onChange={handleGuestInputChange}
-                      className="w-full p-2 rounded-md bg-gray-900 text-white"
-                      required
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2" htmlFor="surname">Soyad</label>
-                    <input
-                      id="surname"
-                      name="surname"
-                      type="text"
-                      value={guestDetails.surname}
-                      onChange={handleGuestInputChange}
-                      className="w-full p-2 rounded-md bg-gray-900 text-white"
-                      required
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2" htmlFor="email">E-posta</label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={guestDetails.email}
-                      onChange={handleGuestInputChange}
-                      className="w-full p-2 rounded-md bg-gray-900 text-white"
-                      required
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2" htmlFor="phone">Telefon</label>
-                    <input
-                      id="phone"
-                      name="phone"
-                      type="text"
-                      value={guestDetails.phone}
-                      onChange={handleGuestInputChange}
-                      className="w-full p-2 rounded-md bg-gray-900 text-white"
-                      required
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2" htmlFor="billing_address">Fatura Adresi</label>
-                    <input
-                      id="billing_address"
-                      name="billing_address"
-                      type="text"
-                      value={guestDetails.billing_address}
-                      onChange={handleGuestInputChange}
-                      className="w-full p-2 rounded-md bg-gray-900 text-white"
-                      required
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2" htmlFor="city">Şehir</label>
-                    <input
-                      id="city"
-                      name="city"
-                      type="text"
-                      value={guestDetails.city}
-                      onChange={handleGuestInputChange}
-                      className="w-full p-2 rounded-md bg-gray-900 text-white"
-                      required
-                    />
-                  </div>
-                  {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-                  <button
-                    type="submit"
-                    className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
-                  >
-                    Misafir Olarak Satın Al
-                  </button>
-                </form>
-              </div>
-            )}
-          </>
-        ) : (
-          <p className="text-gray-500">Sepetiniz boş</p>
+      {/* Misafir veya Kayıt/Giriş Seçenekleri */}
+      <div className="mt-4">
+        {!user && (
+          <div className="flex flex-col gap-4">
+            <button
+              className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
+              onClick={() => setIsGuestCheckout(true)}
+            >
+              Kayıt Olmadan Devam Et
+            </button>
+            <button
+              className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
+              onClick={() => router.push('/login')}
+            >
+              Kayıt Ol veya Giriş Yap
+            </button>
+          </div>
+        )}
+        {user && (
+          <button
+            className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 mt-4 w-full rounded-md hover:opacity-90 transition-opacity"
+            onClick={handleCheckout}
+          >
+            Satın Al
+          </button>
         )}
       </div>
+
+      {/* Misafir Bilgi Formu */}
+      {isGuestCheckout && (
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg mt-4 w-full max-w-lg mx-auto sm:px-4 sm:w-full sm:max-w-xs">
+          <h3 className="text-xl font-bold text-center mb-4">Misafir Alışverişi Bilgileri</h3>
+          <form onSubmit={handleGuestCheckout}>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2" htmlFor="full_name">Ad</label>
+              <input
+                id="full_name"
+                name="full_name"
+                type="text"
+                value={guestDetails.full_name}
+                onChange={handleGuestInputChange}
+                className="w-full p-2 rounded-md bg-gray-900 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2" htmlFor="surname">Soyad</label>
+              <input
+                id="surname"
+                name="surname"
+                type="text"
+                value={guestDetails.surname}
+                onChange={handleGuestInputChange}
+                className="w-full p-2 rounded-md bg-gray-900 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2" htmlFor="email">E-posta</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={guestDetails.email}
+                onChange={handleGuestInputChange}
+                className="w-full p-2 rounded-md bg-gray-900 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2" htmlFor="phone">Telefon</label>
+              <input
+                id="phone"
+                name="phone"
+                type="text"
+                value={guestDetails.phone}
+                onChange={handleGuestInputChange}
+                className="w-full p-2 rounded-md bg-gray-900 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2" htmlFor="billing_address">Fatura Adresi</label>
+              <input
+                id="billing_address"
+                name="billing_address"
+                type="text"
+                value={guestDetails.billing_address}
+                onChange={handleGuestInputChange}
+                className="w-full p-2 rounded-md bg-gray-900 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2" htmlFor="city">Şehir</label>
+              <input
+                id="city"
+                name="city"
+                type="text"
+                value={guestDetails.city}
+                onChange={handleGuestInputChange}
+                className="w-full p-2 rounded-md bg-gray-900 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                required
+              />
+            </div>
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
+            >
+              Misafir Olarak Satın Al
+            </button>
+          </form>
+        </div>
+      )}
+    </>
+  ) : (
+    <p className="text-gray-500">Sepetiniz boş</p>
+  )}
+</div>
+
 
       {isCartOpen && (
         <div
