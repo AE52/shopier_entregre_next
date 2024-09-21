@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     // Kullanıcı tarafından doldurulan veriler
     const args = {
       'API_key': apiKey,
-      'website_index': 3,
+      'website_index': 1,
       'platform_order_id': data.order_id,  // Sipariş ID
       'product_name': data.item_name,      // Ürün adı
       'product_type': productType,
