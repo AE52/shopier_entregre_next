@@ -12,8 +12,17 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [user, setUser] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isGuestCheckout, setIsGuestCheckout] = useState(false); // Misafir Kullanıcı Modu
+  const [guestDetails, setGuestDetails] = useState({
+    full_name: '',
+    email: '',
+    billing_address: '',
+    city: '',
+  });
+
   const router = useRouter();
 
+  // Kullanıcı oturumu kontrolü
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -33,6 +42,7 @@ export default function Home() {
     checkUser();
   }, []);
 
+  // Ürünleri çekme
   useEffect(() => {
     const fetchProducts = async () => {
       let { data: products, error } = await supabase
@@ -45,57 +55,75 @@ export default function Home() {
     fetchProducts();
   }, []);
 
+  // Sepete ekleme fonksiyonu
   const addToCart = async (product) => {
     if (!user) {
-      router.push('/login');
-      return;
-    }
-
-    const existingProductIndex = cart.findIndex((item) => item.product_id === product.id);
-
-    if (existingProductIndex > -1) {
-      const newCart = [...cart];
-      newCart[existingProductIndex].quantity += 1;
-
-      setCart(newCart);
-      await supabase
-        .from('cart')
-        .update({ quantity: newCart[existingProductIndex].quantity })
-        .eq('product_id', product.id)
-        .eq('user_id', user.id);
-    } else {
-      const newCartItem = { product_id: product.id, name: product.name, price: product.price, quantity: 1, user_id: user.id };
+      // Kullanıcı oturumu yoksa misafir kullanıcı olarak devam et
+      const newCartItem = {
+        product_id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        user_id: 'guest',
+      };
       setCart([...cart, newCartItem]);
-
-      await supabase
-        .from('cart')
-        .insert([newCartItem]);
+    } else {
+      // Kullanıcı oturum açmışsa mevcut sepet işlemleri
+      const existingProductIndex = cart.findIndex((item) => item.product_id === product.id);
+      if (existingProductIndex > -1) {
+        const newCart = [...cart];
+        newCart[existingProductIndex].quantity += 1;
+        setCart(newCart);
+        await supabase
+          .from('cart')
+          .update({ quantity: newCart[existingProductIndex].quantity })
+          .eq('product_id', product.id)
+          .eq('user_id', user.id);
+      } else {
+        const newCartItem = {
+          product_id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          user_id: user.id,
+        };
+        setCart([...cart, newCartItem]);
+        await supabase.from('cart').insert([newCartItem]);
+      }
     }
 
     setIsCartOpen(true);
   };
 
+  // Sepet görünümü aç/kapa
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
   };
 
+  // Toplam ücreti hesaplama
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  const handleCheckout = async () => {
-    if (!user) {
-      router.push('/login');
-    } else {
-      // Her bir ürünün ismini ve adetini birleştiriyoruz
-      const formattedItems = cart.map(item => `${item.quantity} tane ${item.name}`).join(', ');
+  // Kullanıcı verilerini güncelleme (Misafir kullanıcı)
+  const handleGuestInputChange = (e) => {
+    const { name, value } = e.target;
+    setGuestDetails({ ...guestDetails, [name]: value });
+  };
+
+  // Misafir kullanıcı checkout işlemi
+  const handleGuestCheckout = async (e) => {
+    e.preventDefault();
   
+    try {
       const orderData = {
         order_id: Math.floor(Math.random() * 1000000),
-        item_name: formattedItems,  // Adet ve ürün isimleriyle birlikte gönderiliyor
-        buyer_name: user.user_metadata.full_name,
-        buyer_email: user.email,
-        total: calculateTotal(),  // Toplam ücreti hesapla
+        item_name: cart.map(item => `${item.quantity} tane ${item.name}`).join(', '),
+        buyer_name: guestDetails.full_name,
+        buyer_email: guestDetails.email,
+        billing_address: guestDetails.billing_address,
+        city: guestDetails.city,
+        total: calculateTotal(),
       };
   
       const res = await fetch('/api/generate-payment-form', {
@@ -105,21 +133,54 @@ export default function Home() {
       });
   
       const html = await res.text();
-      document.write(html);  // Ödeme formunu görüntüle
+      document.write(html);
+    } catch (error) {
+      console.error("Ödeme işlemi sırasında hata oluştu:", error);
+      alert("Ödeme işlemi sırasında bir hata oluştu, lütfen tekrar deneyin.");
     }
   };
   
 
+  // Kullanıcı oturum açmışsa normal checkout işlemi
+  const handleCheckout = async () => {
+    if (!user) {
+      router.push('/login');
+    } else {
+      const orderData = {
+        order_id: Math.floor(Math.random() * 1000000),
+        item_name: cart.map(item => `${item.quantity} tane ${item.name}`).join(', '),
+        buyer_name: user.user_metadata.full_name,
+        buyer_email: user.email,
+        total: calculateTotal(),
+      };
+
+      const res = await fetch('/api/generate-payment-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      });
+
+      const html = await res.text();
+      document.write(html);
+    }
+  };
+
   const removeFromCart = async (productId) => {
+    if (!user || !user.id) {
+      console.log('Kullanıcı oturum açmadı.');
+      return;
+    }
+  
     const newCart = cart.filter(item => item.product_id !== productId);
     setCart(newCart);
-
+  
     await supabase
       .from('cart')
       .delete()
       .eq('product_id', productId)
       .eq('user_id', user.id);
   };
+  
 
   return (
     <motion.div
@@ -129,7 +190,7 @@ export default function Home() {
       className="flex flex-col min-h-screen bg-gradient-to-r from-black via-purple-900 to-black text-white"
       style={{ overflowX: 'hidden' }}
     >
-      <Header toggleCart={toggleCart} cartItems={cart} /> {/* cartItems prop olarak gönderiliyor */}
+      <Header toggleCart={toggleCart} cartItems={cart} />
 
       <div className="flex-1 container mx-auto p-8 pt-20">
         <h1 className="text-5xl font-bold text-center mb-8">Kart Mağazası</h1>
@@ -161,7 +222,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Sepet paneli */}
+      {/* Sepet Paneli */}
       <div className={`fixed inset-y-0 right-0 w-80 bg-gray-900 p-6 transition-transform transform z-50 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <h2 className="text-2xl font-bold mb-4">Sepetiniz</h2>
         <button onClick={toggleCart} className="absolute top-4 right-6 text-white text-xl">✖</button>
@@ -183,12 +244,97 @@ export default function Home() {
               ))}
             </ul>
             <div className="mt-4 text-lg font-bold">Toplam: {calculateTotal()} TL</div>
-            <button
-              className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 mt-4 w-full rounded-md hover:opacity-90 transition-opacity"
-              onClick={handleCheckout}
-            >
-              Satın Al
-            </button>
+
+            {/* Misafir veya Kayıt/Giriş Seçenekleri */}
+            <div className="mt-4">
+              {!user && (
+                <div className="flex flex-col gap-4">
+                  <button
+                    className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
+                    onClick={() => setIsGuestCheckout(true)}
+                  >
+                    Kayıt Olmadan Devam Et
+                  </button>
+                  <button
+                    className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
+                    onClick={() => router.push('/login')}
+                  >
+                    Kayıt Ol veya Giriş Yap
+                  </button>
+                </div>
+              )}
+              {user && (
+                <button
+                  className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 mt-4 w-full rounded-md hover:opacity-90 transition-opacity"
+                  onClick={handleCheckout}
+                >
+                  Satın Al
+                </button>
+              )}
+            </div>
+
+            {/* Misafir Bilgi Formu */}
+            {isGuestCheckout && (
+              <div className="bg-gray-800 p-6 rounded-lg shadow-lg mt-4">
+                <h3 className="text-xl font-bold text-center mb-4">Misafir Alışverişi Bilgileri</h3>
+                <form onSubmit={handleGuestCheckout}>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2" htmlFor="full_name">Ad Soyad</label>
+                    <input
+                      id="full_name"
+                      name="full_name"
+                      type="text"
+                      value={guestDetails.full_name}
+                      onChange={handleGuestInputChange}
+                      className="w-full p-2 rounded-md bg-gray-900 text-white"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2" htmlFor="email">E-posta</label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={guestDetails.email}
+                      onChange={handleGuestInputChange}
+                      className="w-full p-2 rounded-md bg-gray-900 text-white"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2" htmlFor="billing_address">Fatura Adresi</label>
+                    <input
+                      id="billing_address"
+                      name="billing_address"
+                      type="text"
+                      value={guestDetails.billing_address}
+                      onChange={handleGuestInputChange}
+                      className="w-full p-2 rounded-md bg-gray-900 text-white"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2" htmlFor="city">Şehir</label>
+                    <input
+                      id="city"
+                      name="city"
+                      type="text"
+                      value={guestDetails.city}
+                      onChange={handleGuestInputChange}
+                      className="w-full p-2 rounded-md bg-gray-900 text-white"
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="bg-gradient-to-r from-green-500 to-teal-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
+                  >
+                    Misafir Olarak Satın Al
+                  </button>
+                </form>
+              </div>
+            )}
           </>
         ) : (
           <p className="text-gray-500">Sepetiniz boş</p>
