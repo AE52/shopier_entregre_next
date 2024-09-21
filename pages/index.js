@@ -100,6 +100,23 @@ export default function Home() {
 
     setIsCartOpen(true);
   };
+  const updateCartQuantity = async (productId, newQuantity) => {
+  if (newQuantity < 1) return; // En az 1 olmalı
+  const newCart = cart.map((item) =>
+    item.product_id === productId ? { ...item, quantity: parseInt(newQuantity) } : item
+  );
+  setCart(newCart);
+  
+  // Eğer oturum açmış bir kullanıcı varsa Supabase'de güncelle
+  if (user) {
+    await supabase
+      .from('cart')
+      .update({ quantity: parseInt(newQuantity) })
+      .eq('product_id', productId)
+      .eq('user_id', user.id);
+  }
+};
+
 
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
@@ -251,14 +268,27 @@ export default function Home() {
       <ul>
         {cart.map((item, index) => (
           <li key={index} className="mb-4 flex justify-between items-center">
-            <span>{item.name}</span>
-            <span>{item.price} TL</span>
-            <button
-              className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 transition-colors"
-              onClick={() => removeFromCart(item.product_id)}
-            >
-              Çıkart
-            </button>
+            <div className="flex flex-col w-full">
+              <span className="font-semibold">{item.name}</span>
+              <div className="flex items-center justify-between mt-2">
+                <div className="flex items-center">
+                  <input
+                    type="number"
+                    min="1"
+                    value={item.quantity}
+                    onChange={(e) => updateCartQuantity(item.product_id, e.target.value)}
+                    className="w-16 p-1 text-center bg-gray-800 text-white rounded-md"
+                  />
+                  <span className="ml-4">{item.price} TL</span>
+                </div>
+                <button
+                  className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 transition-colors"
+                  onClick={() => removeFromCart(item.product_id)}
+                >
+                  Çıkart
+                </button>
+              </div>
+            </div>
           </li>
         ))}
       </ul>
@@ -384,6 +414,7 @@ export default function Home() {
     <p className="text-gray-500">Sepetiniz boş</p>
   )}
 </div>
+
 
 
       {isCartOpen && (
