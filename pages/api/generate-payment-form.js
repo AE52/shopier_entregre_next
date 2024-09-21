@@ -34,11 +34,11 @@ export default async function handler(req, res) {
       'billing_address': data.billing_address,
       'billing_city': data.city,
       'billing_country': "TR",
-      'billing_postcode': data.billing_postcode || '', // Opsiyonel
+      'billing_postcode': data.billing_postcode || '1', // Opsiyonel
       'shipping_address': data.billing_address,
       'shipping_city': data.city,
       'shipping_country': "TR",
-      'shipping_postcode': data.billing_postcode || '', // Opsiyonel
+      'shipping_postcode': data.billing_postcode || '1', // Opsiyonel
       'total_order_value': data.total_order_value, // Toplam tutar
       'currency': 0,                      // 0 = Türk Lirası
       'platform': 0,
