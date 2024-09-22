@@ -1,28 +1,23 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
-import Cart from './Cart';  // Cart bileşenini doğru dosya yolundan import edin
+import Cart from './Cart'; // Cart bileşenini doğru bir yoldan içeri aktardığınızdan emin olun
+import { supabase } from '../lib/supabaseClient'; // Supabase istemcisini içe aktarın
+
 const CartWrapper = () => {
   const [user, setUser] = useState(null);
   const [addresses, setAddresses] = useState([]);
 
   useEffect(() => {
     const getUserAndAddresses = async () => {
-      // Kullanıcıyı Supabase'den al
       const { data: { user }, error } = await supabase.auth.getUser();
-
       if (error) {
         console.error('Kullanıcı alınırken hata oluştu:', error.message);
       } else {
-        console.log('Kullanıcı:', user); // Burada kullanıcı bilgisini loglayın
         setUser(user);
-
-        // Eğer kullanıcı varsa adresleri de al
         if (user) {
           const { data: addresses, error } = await supabase
             .from('addresses')
             .select('*')
             .eq('user_id', user.id);
-
           if (error) {
             console.error('Adresler alınırken hata oluştu:', error.message);
           } else {
@@ -31,12 +26,10 @@ const CartWrapper = () => {
         }
       }
     };
-
     getUserAndAddresses();
   }, []);
 
-  return (
-    // User ve addresses prop'larını Cart bileşenine geçiriyoruz
-    <Cart user={user} addresses={addresses} />
-  );
+  return <Cart user={user} addresses={addresses} />;
 };
+
+export default CartWrapper; // Varsayılan olarak CartWrapper bileşenini export ediyoruz
