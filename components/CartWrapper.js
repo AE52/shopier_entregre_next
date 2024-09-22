@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Cart from '../pages/components/Cart'; // Cart bileşenini doğru bir yoldan içeri aktardığınızdan emin olun
-import { supabase } from '../pages/lib/supabase'; // Supabase istemcisini içe aktarın
+import { supabase } from '../lib/supabase'; // Supabase istemcisini içe aktarın
 
 const CartWrapper = () => {
   const [user, setUser] = useState(null);
