@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { useContext } from 'react';
+import CartContext from '../context/CartContext';
 
-export default function ProductCard({ product, addToCart }) {
+export default function ProductCard({ product }) {
+  const { addToCart } = useContext(CartContext);
+
   return (
     <div className="border rounded-lg shadow-lg p-4 bg-gray-900 flex flex-col justify-between">
       <Link href={`/product/${product.id}`}>

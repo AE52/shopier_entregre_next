@@ -1,3 +1,4 @@
+import { useCart } from '../context/CartContext'
 export default function CheckoutForm({ guestDetails, handleGuestInputChange, handleGuestCheckout, errorMessage }) {
     return (
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg mt-4 w-full max-w-lg mx-auto sm:px-4 sm:w-full sm:max-w-xs">
