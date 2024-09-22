@@ -3,10 +3,10 @@
 import { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { supabase } from "../../lib/supabase";
+import { supabase } from "../lib/supabase";
 import { useRouter } from "next/router";
 import { FiShoppingCart } from "react-icons/fi";
-import CartContext from '../context/CartContext';
+import CartContext from '../pages/context/CartContext';
 
 const navItems = [
   { path: "/", name: "Anasayfa" },

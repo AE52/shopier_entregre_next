@@ -3,8 +3,8 @@ import { supabase } from '../lib/supabase';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Footer from './components/Footer';
-import Header from './components/Header';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 
 export default function Register() {
   const [fullName, setFullName] = useState('');

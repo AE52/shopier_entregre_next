@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import CartContext from '../context/CartContext';
+import CartContext from '../pages/context/CartContext';
 import { useRouter } from 'next/router';
 import AddressManager from './AddressManager';
 

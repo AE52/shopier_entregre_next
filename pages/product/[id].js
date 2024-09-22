@@ -2,10 +2,10 @@ import { useRouter } from 'next/router';
 import { useEffect, useState, useContext } from 'react';
 import { supabase } from '../../lib/supabase';
 import Image from 'next/image';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 import { motion } from 'framer-motion';
-import Cart from '../components/Cart';
+import Cart from '../../components/Cart';
 import CartContext from '../context/CartContext'; // Import CartContext
 
 export default function ProductPage() {
