@@ -3,6 +3,7 @@ import CartContext from '../context/CartContext';
 import { useRouter } from 'next/router';
 import AddressManager from './AddressManager';
 
+
 export default function Cart({ user, addresses, addAddress }) {
   const {
     cart,
