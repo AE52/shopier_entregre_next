@@ -6,7 +6,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { motion } from 'framer-motion';
 import Cart from '../../components/Cart';
-import CartContext from '../context/CartContext'; // Import CartContext
+import CartContext from '../../context/CartContext'; // Import CartContext
 
 export default function ProductPage() {
   const router = useRouter();

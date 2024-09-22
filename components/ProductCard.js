@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useContext } from 'react'; // useContext hook'unu ekleyelim
-import CartContext from '../pages/context/CartContext'; // CartContext'i import edelim
+import CartContext from '../context/CartContext';
+
 
 export default function ProductCard({ product }) {
   const router = useRouter();
