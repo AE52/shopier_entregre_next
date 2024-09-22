@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../../lib/supabase';
 import Cart from './Cart';  // Cart bileşenini doğru dosya yolundan import edin
 const CartWrapper = () => {
   const [user, setUser] = useState(null);
