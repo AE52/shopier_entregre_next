@@ -1,30 +1,34 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { useContext } from 'react';
-import CartContext from '../context/CartContext';
+import { useRouter } from 'next/router';
+import { useContext } from 'react'; // useContext hook'unu ekleyelim
+import CartContext from '../context/CartContext'; // CartContext'i import edelim
 
 export default function ProductCard({ product }) {
-  const { addToCart } = useContext(CartContext);
+  const router = useRouter();
+  const { addToCart } = useContext(CartContext); // CartContext'ten addToCart fonksiyonunu alıyoruz
+
+  const handleProductClick = () => {
+    // Ürün sayfasına yönlendirme
+    router.push(`/product/${product.id}`);
+  };
 
   return (
-    <div className="border rounded-lg shadow-lg p-4 bg-gray-900 flex flex-col justify-between">
-      <Link href={`/product/${product.id}`}>
-        <div className="cursor-pointer flex flex-col items-center">
-          <Image
-            src={product.image_url}
-            alt={product.name}
-            width={300}
-            height={200}
-            className="w-full h-full object-cover rounded-md"
-          />
-          <h2 className="text-xl md:text-2xl font-bold mt-4 text-center">{product.name}</h2>
-          <p className="text-md md:text-lg text-center">Fiyat: {product.price} TL</p>
-        </div>
-      </Link>
-
+    <div className="bg-gray-900 rounded-lg shadow-lg p-4 text-center flex flex-col justify-between h-full">
+      {/* Fotoğraf alanına tıklanabilir özellik ekliyoruz */}
+      <div 
+        className="w-full h-64 overflow-hidden rounded-lg cursor-pointer"
+        onClick={handleProductClick}
+      >
+        <img
+          src={product.image_url}
+          alt={product.name}
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <h2 className="text-lg font-bold mt-4">{product.name}</h2>
+      <p className="text-sm text-gray-400 mt-2">Fiyat: {product.price} TL</p>
       <button
-        className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2 px-4 mt-4 w-full rounded-md hover:opacity-90 transition-opacity"
-        onClick={() => addToCart(product)}
+        className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 mt-4 rounded"
+        onClick={() => addToCart(product)} // Sepete ekleme fonksiyonunu çağırıyoruz
       >
         Sepete Ekle
       </button>

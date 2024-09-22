@@ -1,24 +1,21 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { supabase } from '../../lib/supabase';
 import Image from 'next/image';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { motion } from 'framer-motion';
 import Cart from '../components/Cart';
+import CartContext from '../context/CartContext'; // Import CartContext
 
-export default function ProductPage({
-  cart,
-  addToCart,
-  updateCartQuantity,
-  removeFromCart,
-  calculateTotal,
-  isCartOpen,
-  toggleCart,
-}) {
+export default function ProductPage() {
   const router = useRouter();
   const { id } = router.query;
   const [product, setProduct] = useState(null);
+  
+  // Access addToCart from CartContext
+  const { addToCart } = useContext(CartContext);
+
 
   useEffect(() => {
     if (id) {
@@ -45,7 +42,7 @@ export default function ProductPage({
       exit={{ opacity: 0 }}
       className="min-h-screen flex flex-col justify-between bg-gradient-to-r from-black via-purple-900 to-black text-white"
     >
-      <Header toggleCart={toggleCart} cartItems={cart} />
+      <Header />
 
       <div className="container mx-auto p-4 md:p-8 py-20">
         <h1 className="text-3xl md:text-5xl font-bold text-center mb-4 md:mb-8 bg-gradient-to-r from-purple-500 to-indigo-500 text-transparent bg-clip-text">
@@ -68,7 +65,7 @@ export default function ProductPage({
             <p className="text-lg md:text-2xl font-bold mb-4">Fiyat: {product.price} TL</p>
             <button
               className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2 px-4 w-full md:w-auto rounded-md hover:opacity-90 transition-opacity"
-              onClick={() => addToCart(product)}
+              onClick={() => addToCart(product)} // Use addToCart from CartContext
             >
               Sepete Ekle
             </button>
@@ -76,14 +73,7 @@ export default function ProductPage({
         </div>
       </div>
 
-      <Cart
-        cart={cart}
-        updateCartQuantity={updateCartQuantity}
-        removeFromCart={removeFromCart}
-        calculateTotal={calculateTotal}
-        isCartOpen={isCartOpen}
-        toggleCart={toggleCart}
-      />
+      <Cart />
       <Footer />
     </motion.div>
   );
