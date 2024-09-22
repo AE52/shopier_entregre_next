@@ -1,11 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function AddressManager({ addresses = [], addAddress }) {
+export default function AddressManager({ addresses, addAddress }) {
+  // Yeni adres formu için state
   const [newAddress, setNewAddress] = useState({
+    name: '',
+    surname: '',
+    phone: '',
     billing_address: '',
     city: '',
   });
 
+  // Eğer var olan adres bilgisi varsa, bu bilgileri doldur
+  useEffect(() => {
+    if (addresses && addresses.length > 0) {
+      setNewAddress({
+        name: addresses[0].name || '',
+        surname: addresses[0].surname || '',
+        phone: addresses[0].phone || '',
+        billing_address: addresses[0].billing_address || '',
+        city: addresses[0].city || '',
+      });
+    }
+  }, [addresses]);
+
+  // Formdaki input değişikliklerini yakalayan fonksiyon
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewAddress((prev) => ({
@@ -14,65 +32,77 @@ export default function AddressManager({ addresses = [], addAddress }) {
     }));
   };
 
+  // Adres ekleme fonksiyonu
   const handleAddAddress = (e) => {
     e.preventDefault();
-    addAddress(newAddress);
-    setNewAddress({ billing_address: '', city: '' }); // Formu sıfırla
+    addAddress(newAddress); // Yeni adresi üst bileşene ilet
+    setNewAddress({ name: '', surname: '', phone: '', billing_address: '', city: '' }); // Formu sıfırla
   };
 
   return (
     <div>
-      <h3 className="text-xl font-bold mb-4">Adreslerim</h3>
-
-      <ul className="mb-4">
-        {/* Güvenli bir şekilde addresses kontrolü */}
-        {addresses && addresses.length > 0 ? (
-          addresses.map((address, index) => (
-            <li key={index} className="text-white">
-              {address.billing_address}, {address.city}
-            </li>
-          ))
-        ) : (
-          <p className="text-gray-500">Henüz eklenmiş bir adres yok.</p>
-        )}
-      </ul>
-
-      <form onSubmit={handleAddAddress} className="mb-4">
+      <h3 className="text-lg font-bold mb-4">Adres Bilgisi</h3>
+      <form onSubmit={handleAddAddress}>
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2" htmlFor="billing_address">
-            Fatura Adresi
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Ad</label>
           <input
-            id="billing_address"
-            name="billing_address"
             type="text"
+            name="name"
+            value={newAddress.name}
+            onChange={handleInputChange}
+            className="w-full p-2 rounded-md bg-gray-200"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Soyad</label>
+          <input
+            type="text"
+            name="surname"
+            value={newAddress.surname}
+            onChange={handleInputChange}
+            className="w-full p-2 rounded-md bg-gray-200"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Telefon</label>
+          <input
+            type="tel"
+            name="phone"
+            value={newAddress.phone}
+            onChange={handleInputChange}
+            className="w-full p-2 rounded-md bg-gray-200"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Adres</label>
+          <input
+            type="text"
+            name="billing_address"
             value={newAddress.billing_address}
             onChange={handleInputChange}
-            className="w-full p-2 rounded-md bg-gray-900 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+            className="w-full p-2 rounded-md bg-gray-200"
             required
           />
         </div>
-
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2" htmlFor="city">
-            Şehir
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Şehir</label>
           <input
-            id="city"
-            name="city"
             type="text"
+            name="city"
             value={newAddress.city}
             onChange={handleInputChange}
-            className="w-full p-2 rounded-md bg-gray-900 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+            className="w-full p-2 rounded-md bg-gray-200"
             required
           />
         </div>
-
         <button
           type="submit"
-          className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-2 px-4 w-full rounded-md hover:opacity-90 transition-opacity"
+          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
         >
-          Adres Ekle
+          Adres Ekle / Güncelle
         </button>
       </form>
     </div>
