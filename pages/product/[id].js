@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useContext } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../lib/supabase';
 import Image from 'next/image';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
