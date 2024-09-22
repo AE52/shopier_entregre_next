@@ -10,7 +10,6 @@ import CartContext from '../context/CartContext';
 
 const navItems = [
   { path: "/", name: "Anasayfa" },
-  { path: "/siparislerim", name: "Siparişlerim" },
   { path: "/hakkimizda", name: "Hakkımızda" },
   { path: "/iletisim", name: "İletişim" },
 ];
@@ -92,6 +91,26 @@ export default function Header() {
             {item.name}
           </Link>
         ))}
+
+        {/* Kullanıcı Girişi Olmuşsa */}
+        {user && (
+          <>
+            <Link
+              href="/siparislerim"
+              className="text-2xl font-bold hover:text-purple-300 mb-6"
+              onClick={toggleMenu}
+            >
+              Siparişlerim
+            </Link>
+            <Link
+              href="/adreslerim"
+              className="text-2xl font-bold hover:text-purple-300 mb-6"
+              onClick={toggleMenu}
+            >
+              Adreslerim
+            </Link>
+          </>
+        )}
 
         {/* Kullanıcı Girişi Olmamışsa */}
         {!user && (
